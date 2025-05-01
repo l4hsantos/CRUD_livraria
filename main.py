@@ -9,13 +9,13 @@ def boas_vindas():
     print("—" * 60) #estilização de título
     print("     BEM-VINDO À LIVRARIA DAS CARTAS PERDIDAS".center(60))
     print("—" * 60)
-    print(" Um lugar onde cada livro possui uma história esperando para ser reencontrada,\n a sua próxima grande aventura está a uma página de distância.")
+    print(" Um lugar onde cada livro possui uma história esperando para ser reencontrada.\nA sua próxima grande aventura está a uma página de distância.")
     print()
 
 
 def cadastrar_livro():
     print("\n Cadastre o livro seguindo os dados abaixo")
-    print("Alerta: O ID só deve possuir números")
+    print("Alerta: O 'id' só deve possuir números")
     id = input("Digite o 'id'(identificador) do livro: " ) 
     #em banco de dados seria not null e chave primária
     titulo = input("Digite o título do livro: ").upper()
@@ -61,31 +61,68 @@ def excluir_livro():
 
 def cadastrar_cliente():
     print("\nCadastre o cliente de acordo com os dados abaixo")
+    print("Alerta: o CPF deve conter 11 dígitos!")
+    while True:
+        cpf = input("Digite o CPF do cliente: ")
+        if len(cpf) == 11 and cpf.isdigit():
+            formato_cpf = f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
+            print(f"O CPF foi formatado: {formato_cpf}")
+            break
+        else:
+            print("CPF inválido. Confira a quantidade de números.")
+    
     nome = input("Digite o nome completo do cliente: ").upper()
-    print("Alerta: o CPF deve ser conter os pontos e traços, totalizando 14 caracteres")
-    #em BD essa seria a chave primária da entidade cliente e not null (14)
-    cpf = input("Digite o CPF do cliente: ")
     email = input("Digite o email do cliente: ").upper()
-    print("Alerta: o telefone deve conter o DDD do estado")
-    telefone = input("Digite o telefone do cliente: ")
 
-    if len(telefone) == 11:
-        formato_telefone = f"({telefone[:2]}) {telefone[2:3]}{telefone[3:7]}-{telefone[7:]}"
-#[:2] separa o DDD, [2:3] o "9" da frente, [3:7] os 4 números antes do tracinho, [7:] os 4 últimos números 
-#O : é o slicing(fatiamento) de string, que é usado coom base nas posições do caracteres
-      
-        print(f"Telefone fomratado: {formato_telefone}")
-    else:
-        print("Telefone inválido. Confira a quantidade de números")
-
-    clientes.append((nome, cpf, email, formato_telefone))
+    while True:
+        print("Alerta: o telefone deve conter o DDD do estado")
+        telefone = input("Digite o telefone do cliente: ")
+        if len(telefone) == 11 and telefone.isdigit():
+            formato_telefone = f"({telefone[:2]}) {telefone[2:3]}{telefone[3:7]}-{telefone[7:]}"
+            print(f"Telefone foi formatado: {formato_telefone}")
+            break
+        else:
+            print("Telefone inválido. Confira a quantidade de números.")
+    
+    cliente = (formato_cpf, nome, email, formato_telefone)
+    clientes.append(cliente)
     print(f"\nO(a) cliente {nome} foi cadastrado(a)!\n")
 
-
-
 def lista_cliente():
+    if not clientes:
+        print("\nNenhum cliente foi cadastrado\n")
+    else:
+         print("\nLista de clientes cadastrados:\n ")
+         for cliente in clientes:
+            print(f"Nome: {cliente[0]}")
+            print(f"CPF: {cliente[1]}")
+            print(f"Email: {cliente[2]}")
+            print(f"Telefone: {cliente[3]}")
+            print("—" * 40)
+
 
 def excluir_cliente():
+    excluir_cpf = input("Digite o CPF do cliente que você deseja excluir: ")
+    
+    cpf_normal = excluir_cpf.replace(".", "").replace("-", "")
+    
+    if len(cpf_normal) == 11:
+        
+        formato_cpf = f"{cpf_normal[:3]}.{cpf_normal[3:6]}.{cpf_normal[6:9]}-{cpf_normal[9:]}"
+        
+#Antes de adicionar o cpf_normal, o usuário era obrigado a digitar o cpf com 14 dígitos,
+#Agora, o próprio código formata novamente para apagar, corrigindo possíveis complicações
+
+        for c in range(len(clientes)):
+            if clientes[c][0] == formato_cpf:
+                del clientes[c]
+                print("O cadastro do cliente foi apagado. Se quiser adicioná-lo novamente, realize o cadastro (opção 2).\n")
+                return
+        
+        print("O CPF (Cadastro de Pessoa Física) digitado não foi encontrado. Tente novamente.")
+    else:
+        print("CPF inválido. Ele deve conter 11 dígitos numéricos.")
+
 
 def cadastrar_compra():
 
