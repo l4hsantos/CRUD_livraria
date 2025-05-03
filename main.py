@@ -16,7 +16,7 @@ def boas_vindas():
 def cadastrar_livro():
     print("\n Cadastre o livro seguindo os dados abaixo")
     print("Alerta: O 'id' só deve possuir números")
-    id = input("Digite o 'id'(identificador) do livro: " ) 
+    ID = input("Digite o 'id'(identificador) do livro: " ) 
     #em banco de dados seria not null e chave primária
     titulo = input("Digite o título do livro: ").upper()
     autor = input("Digite o nome do autor: ").upper()
@@ -27,7 +27,7 @@ def cadastrar_livro():
     estoque = input("Digite quantos livros têm no estoque: ")
     estoque = int(estoque)
 
-    livros.append((id, titulo, autor, ano, preco, estoque))
+    livros.append((ID, titulo, autor, ano, preco, estoque))
     print(f"\nO cadastro do livro '{titulo}' foi realizado.")
 
 def lista_livro():
@@ -45,32 +45,30 @@ def lista_livro():
             print("—" * 40)
 
 def alterar_livro():
-    
-    while True: 
+    while True:
         livro_alterar = input("Digite o 'id'(indicador) do livro que você deseja alterar: ")
+        for livro in livros:
+            ID, titulo, autor, ano, preco, estoque = livro
+            if ID == livro_alterar:
+                print(f"Título: {titulo}, Autor: {autor}, Ano de publicação: {ano}, Preço: {preco}, Estoque: {estoque}")
 
-    
-    
-        for LIVRO in livros:
-        id, titulo, autor, ano, preco, estoque = livro
-            if id == livro_alterar:
-            print(f"Título: {titulo}, Autor: {autor}, Ano de publicação: {ano}, Preço: {preco}, Estoque: {estoque}
-            
                 novo_titulo = input("Qual o novo título? ").upper()
                 novo_autor = input("Qual o novo autor? ").upper()
                 novo_ano = input("Qual o novo ano de publicação? ")
-                novo_preco = input("Qual o novo preço? ")
-                novo_preco = float(novo_preco)
+                novo_preco = float(input("Qual o novo preço? "))
                 novo_estoque = input("Qual o novo estoque? ")
-            
-                confirma = input("Para confirmar digite (1), para cancelar digite (0)")
+
+                confirma = input("Para confirmar digite (1), para cancelar digite (0): ")
                 confirma = int(confirma)
                 if confirma == 1:
-                livros[livros.index(LIVRO)] = (id, novo_titulo, novo_autor, novo_ano, novo_preco, novo_estoque)
-                    print(f"\nO livro foi alterado!: \nTítulo: {novo_titulo}, Autor: {novo_autor}, Ano de publicação: {novo_ano}, Preço: R${novo_preco}, Estoque: {novo_estoque}, ID: {id}")
-                return
-            else:
-                print(f"O livro com o 'id'(identificador) {livro_alterar} não foi encontrado. Tente novamente!")
+                    livros[livros.index(livro)] = (ID, novo_titulo, novo_autor, novo_ano, novo_preco, novo_estoque)
+                    print(f"\nO livro foi alterado com sucesso!\nTítulo: {novo_titulo}, Autor: {novo_autor}, Ano: {novo_ano}, Preço: R${novo_preco}, Estoque: {novo_estoque}, ID: {id}")
+                else:
+                    print("A alteração foi cancelada.")
+                return  
+
+        print(f"O livro com o 'id'(identificador) {livro_alterar} não foi encontrado. Tente novamente!")
+        
 
 def excluir_livro():
     excluir_id = input("Digite o 'id'(identificador) do livro que você deseja excluir: ")
