@@ -44,6 +44,34 @@ def lista_livro():
             print(f"Estoque: {livro[5]} unidades disponíveis")
             print("—" * 40)
 
+def alterar_livro():
+    
+    while True: 
+        livro_alterar = input("Digite o 'id'(indicador) do livro que você deseja alterar: ")
+
+    
+    
+        for LIVRO in livros:
+        id, titulo, autor, ano, preco, estoque = livro
+            if id == livro_alterar:
+            print(f"Título: {titulo}, Autor: {autor}, Ano de publicação: {ano}, Preço: {preco}, Estoque: {estoque}
+            
+                novo_titulo = input("Qual o novo título? ").upper()
+                novo_autor = input("Qual o novo autor? ").upper()
+                novo_ano = input("Qual o novo ano de publicação? ")
+                novo_preco = input("Qual o novo preço? ")
+                novo_preco = float(novo_preco)
+                novo_estoque = input("Qual o novo estoque? ")
+            
+                confirma = input("Para confirmar digite (1), para cancelar digite (0)")
+                confirma = int(confirma)
+                if confirma == 1:
+                livros[livros.index(LIVRO)] = (id, novo_titulo, novo_autor, novo_ano, novo_preco, novo_estoque)
+                    print(f"\nO livro foi alterado!: \nTítulo: {novo_titulo}, Autor: {novo_autor}, Ano de publicação: {novo_ano}, Preço: R${novo_preco}, Estoque: {novo_estoque}, ID: {id}")
+                return
+            else:
+                print(f"O livro com o 'id'(identificador) {livro_alterar} não foi encontrado. Tente novamente!")
+
 def excluir_livro():
     excluir_id = input("Digite o 'id'(identificador) do livro que você deseja excluir: ")
 
@@ -100,6 +128,9 @@ def lista_cliente():
             print(f"Telefone: {cliente[3]}")
             print("—" * 40)
 
+def alterar_cliente():
+    
+
 
 def excluir_cliente():
     excluir_cpf = input("Digite o CPF do cliente que você deseja excluir: ")
@@ -128,7 +159,9 @@ def cadastrar_compra():
 
 def lista_compra():
     
-
+def alterar_compra():
+    
+def excluir_compra():
 
 
 #O menu vem depois das listas para não gerar um erro, já que as variáveis ainda vão ser declaradas
@@ -139,15 +172,20 @@ def menu():
         print(" MENU - LIVRARIA DAS CARTAS PERDIDAS".center(60))
         print("—" * 60)
         print('''
+0. Sair
 1. Cadastrar um novo livro
-2. Lista de livros disponíveis
-3. Excluir livro cadastrado
-4. Cadastrar novo cliente
-5. Lista de clientes cadastrados
-6. Excluir cliente cadastrado
-7. Registrar uma nova compra
-8. Lista de compras 
-9. Sair
+2. Lista de livros disponiveis
+3. Alterar dados de livros
+4. Excluir livro cadastrado
+5. Cadastrar novo cliente
+6. Lista de clientes cadastrados
+7. Alterar dados de clientes
+8. Excluir cliente cadastrado
+9. Registrar uma nova compra
+10. Lista de compras
+11. Alterar uma compra
+12. Excluir uma compra
+
        ''' )
 
         numero_menu = input("O que você deseja? ")
@@ -158,18 +196,26 @@ def menu():
         elif numero_menu == "2":
             lista_livro()
         elif numero_menu == "3":
-            excluir_livro()
+            alterar_livro()
         elif numero_menu == "4":
-            cadastrar_cliente()
+            exluir_livro()
         elif numero_menu == "5":
-            lista_cliente()
+            cadastrar_cliente()
         elif numero_menu == "6":
-            excluir_cliente()
+            lista_cliente()
         elif numero_menu == "7":
-            cadastrar_compra()
+            alterar_cliente()
         elif numero_menu == "8":
-            lista_compra()
+            excluir_cliente()
         elif numero_menu == "9":
+            cadastrar_compra()
+        elif numero_menu == "10":
+            lista_compra()
+        elif numero_menu == "11":
+            alterar_compra()
+        elif numero_menu == "12":
+            exluir_compra()
+        elif numero_menu == "0":
             print("Obrigada pela prefrência. Volte sempre!")
             break
         else:
