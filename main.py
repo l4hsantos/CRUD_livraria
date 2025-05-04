@@ -16,7 +16,7 @@ def boas_vindas():
 def cadastrar_livro():
     print("\n Cadastre o livro seguindo os dados abaixo")
     print("Alerta: O 'id' só deve possuir números")
-    ID = input("Digite o 'id'(identificador) do livro: " ) 
+    IDF = input("Digite o 'id'(identificador) do livro: " ) 
     #em banco de dados seria not null e chave primária
     titulo = input("Digite o título do livro: ").upper()
     autor = input("Digite o nome do autor: ").upper()
@@ -27,10 +27,10 @@ def cadastrar_livro():
     estoque = input("Digite quantos livros têm no estoque: ")
     estoque = int(estoque)
 
-    livros.append((ID, titulo, autor, ano, preco, estoque))
+    livros.append((IDF, titulo, autor, ano, preco, estoque))
     print(f"\nO cadastro do livro '{titulo}' foi realizado.")
 
-def lista_livro():
+def lista_livro(): 
     if not livros:
         print("\nNenhum livro foi cadastrado\n")
     else:
@@ -48,21 +48,24 @@ def alterar_livro():
     while True:
         livro_alterar = input("Digite o 'id'(indicador) do livro que você deseja alterar: ")
         for livro in livros:
-            ID, titulo, autor, ano, preco, estoque = livro
-            if ID == livro_alterar:
+            IDF, titulo, autor, ano, preco, estoque = livro
+            if IDF == livro_alterar:
                 print(f"Título: {titulo}, Autor: {autor}, Ano de publicação: {ano}, Preço: {preco}, Estoque: {estoque}")
 
                 novo_titulo = input("Qual o novo título? ").upper()
                 novo_autor = input("Qual o novo autor? ").upper()
                 novo_ano = input("Qual o novo ano de publicação? ")
-                novo_preco = float(input("Qual o novo preço? "))
+                novo_preco = input("Qual o novo preço? ")
+                novo_preco = novo_preco.replace(",",".")
+                novo_preco = float(novo_preco)
                 novo_estoque = input("Qual o novo estoque? ")
+                novo_estoque = int(novo_estoque)
 
                 confirma = input("Para confirmar digite (1), para cancelar digite (0): ")
                 confirma = int(confirma)
                 if confirma == 1:
-                    livros[livros.index(livro)] = (ID, novo_titulo, novo_autor, novo_ano, novo_preco, novo_estoque)
-                    print(f"\nO livro foi alterado com sucesso!\nTítulo: {novo_titulo}, Autor: {novo_autor}, Ano: {novo_ano}, Preço: R${novo_preco}, Estoque: {novo_estoque}, ID: {id}")
+                    livros[livros.index(livro)] = (IDF, novo_titulo, novo_autor, novo_ano, novo_preco, novo_estoque)
+                    print(f"\nO livro foi alterado com sucesso!\nTítulo: {novo_titulo}, Autor: {novo_autor}, Ano: {novo_ano}, Preço: R${novo_preco}, Estoque: {novo_estoque}, ID: {ID}")
                 else:
                     print("A alteração foi cancelada.")
                 return  
@@ -75,7 +78,7 @@ def excluir_livro():
 
     for i in range(len(livros)): #len = quantidade de livros cadastrados
         if livros[i][0] == excluir_id:
-            del livros[i]
+            del livros[i] 
             print("O livro foi excluído. Se quiser adicioná-lo novamente precisa cadastrar(2)\n")
             return
         print("O 'id'(identificador) digitado não foi encontrado. Tente novamente")
@@ -112,7 +115,7 @@ def cadastrar_cliente():
     
     cliente = (formato_cpf, nome, email, formato_telefone)
     clientes.append(cliente)
-    print(f"\nO(a) cliente {nome} foi cadastrado(a)!\n")
+    print(f"\nO(a) cliente {nome} foi cadastrado(a)!\n") 
 
 def lista_cliente():
     if not clientes:
@@ -127,14 +130,44 @@ def lista_cliente():
             print("—" * 40)
 
 def alterar_cliente():
-    
+    while True:
+        cpf = input("Digite o CPF (Cadastro de Pessoa Física) do cliente que deseja alterar: ")
+        if len(cpf) != 11:
+            print("CPF inválido. Confira a quantidade de números.")
+            continue  # volta para o início do laço
 
+        formato_cpf = f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
+        
+        for CLIENTE in clientes:
+            if CLIENTE[0] == formato_cpf:
+                print(f"CPF: {CLIENTE[0]}, Nome: {CLIENTE[1]}, Email: {CLIENTE[2]}, Telefone: {CLIENTE[3]}")
+                
+                novo_nome = input("Qual o novo nome completo? ").upper()
+                novo_email = input("Qual o novo email? ").upper()
+                print("Alerta: o telefone deve ser inserido junto com o DDD")
+                telefone = input("Qual o novo telefone? ")
+
+                if len(telefone) != 11:
+                    print("Telefone inválido. Confira a quantidade de dígitos.")
+                    return
+
+                formato_telefone = f"({telefone[:2]}) {telefone[2:3]}{telefone[3:7]}-{telefone[7:]}"
+                confirma = input("Para confirmar digite (1), para cancelar digite (0): ")
+
+                if confirma == "1":
+                    clientes[clientes.index(CLIENTE)] = (formato_cpf, novo_nome, novo_email, formato_telefone)
+                    print(f"\nO cliente foi alterado com sucesso!\nCPF: {formato_cpf}, Nome: {novo_nome}, Email: {novo_email}, Telefone: {formato_telefone}")
+                else:
+                    print("A alteração foi cancelada.")
+                return
+        
+        print(f"O cliente com CPF {cpf} não foi encontrado. Tente novamente.")
 
 def excluir_cliente():
     excluir_cpf = input("Digite o CPF do cliente que você deseja excluir: ")
     
     cpf_normal = excluir_cpf.replace(".", "").replace("-", "")
-    
+     
     if len(cpf_normal) == 11:
         
         formato_cpf = f"{cpf_normal[:3]}.{cpf_normal[3:6]}.{cpf_normal[6:9]}-{cpf_normal[9:]}"
@@ -152,15 +185,102 @@ def excluir_cliente():
     else:
         print("CPF inválido. Ele deve conter 11 dígitos numéricos.")
 
+import datetime
 
 def cadastrar_compra():
 
-def lista_compra():
-    
-def alterar_compra():
-    
-def excluir_compra():
+    print("\nREGISTRAR COMPRA - LIVRARIA DAS CARTAS PERDIDAS\n")
+ 
+    print("ALERTA: O CPF deve conter 11 números")
+    cpf = input("Digite o CPF (Cadastro de Pessoa Física) do cliente: ")
+    if len(cpf) != 11:
+        print("CPF inválido. Digite novamente.")
+        return
 
+    formato_cpf = f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
+    achar_cliente = None
+    for CLIENTE in clientes:
+        if CLIENTE[0] == formato_cpf: #índice do cpf
+            achar_cliente = CLIENTE
+            break
+
+    if not achar_cliente:
+        print("O cliente não foi encontrado. Tente novamente.")
+        return
+
+    IDF = input("Digite o 'id'(identificador) do livro que deseja comprar: ")
+    achar_livro = None
+    for LIVRO in livros: #índice do ID
+        if LIVRO[0] == IDF:
+            achar_livro = LIVRO
+            break
+
+    if not achar_livro:
+        print("O livro não foi encontrado. Tente novamente.")
+        return
+
+    qnt = input("Digite a quantidade de livros que deseja comprar: ")
+    qnt = int(qnt)
+
+    if qnt > achar_livro[5]:  # [5] é o índice do estoque
+        print("Desculpe, estoque insuficiente.")
+        return
+
+    preco = achar_livro[4]  # [4] é o índice do preço
+    total = preco * qnt
+    data = datetime.datetime.now().strftime("%d/%m/%Y %H:%M") #data exata com mês, dia, ano e hora
+
+    novo_estoque = achar_livro[5] - qnt #diminuir a quantidade do estoque na lista livros
+    livros[livros.index(achar_livro)] = (*achar_livro[:5], novo_estoque) #o * desempacota para alterar um valor
+    #se não usar o * você cria uma tupla dentro de outra tupla
+
+    compras.append((formato_cpf, IDF, qnt, preco, total, data))
+   
+    print("—" * 50)
+    print("\nNOTA FISCAL - LIVRARIA DAS CARTAS PERDIDAS")
+    print("—" * 50)
+    print(f"Data: {data}")
+    print(f"Cliente: {achar_cliente[1]}")
+    print(f"CPF: {formato_cpf}")
+    print(f"Livro: {achar_livro[1]} - {achar_livro[2]}")
+    print(f"Quantidade: {qnt}")
+    print(f"Preço: R${preco}")
+    print("—" * 50)
+    print(f"Total: R${total}")
+    print("—" * 50)
+    print("Obrigada pela compra. Volte sempre!\nOnde sua próxima aventura está a uma página de distância!")
+
+def lista_compra():
+    print("—"*60)
+    print("\nREGISTRO DE COMPRAS - LIVRARIA DAS CARTAS PERDIDAS")
+    print("—"*60)
+
+    if not compras:
+        print("Nenhuma compra foi registrada.")
+        return
+    for COMPRA in compras:
+        formato_cpf, IDF, qnt, preco, total, data = COMPRA
+
+        for CLIENTE in clientes:
+            if CLIENTE[0] == formato_cpf:
+                nome = CLIENTE[1].upper()
+                break
+        
+        IDF = COMPRA[1]
+
+        for LIVRO in livros:
+            if LIVRO[0] == IDF:
+                titulo = LIVRO[1]
+                autor = LIVRO[2]
+                break
+        
+        print(f"Data: {data}")
+        print(f"Cliente: {nome}")
+        print(f"Livro: {titulo}")
+        print(f"Quantidade: {qnt}")
+        print(f"Preço: {preco}")
+        print(f"Total: R${total}")
+        print("—"*60)
 
 #O menu vem depois das listas para não gerar um erro, já que as variáveis ainda vão ser declaradas
 
@@ -170,7 +290,7 @@ def menu():
         print(" MENU - LIVRARIA DAS CARTAS PERDIDAS".center(60))
         print("—" * 60)
         print('''
-0. Sair
+
 1. Cadastrar um novo livro
 2. Lista de livros disponiveis
 3. Alterar dados de livros
@@ -181,8 +301,7 @@ def menu():
 8. Excluir cliente cadastrado
 9. Registrar uma nova compra
 10. Lista de compras
-11. Alterar uma compra
-12. Excluir uma compra
+0. Sair
 
        ''' )
 
@@ -209,12 +328,20 @@ def menu():
             cadastrar_compra()
         elif numero_menu == "10":
             lista_compra()
-        elif numero_menu == "11":
-            alterar_compra()
-        elif numero_menu == "12":
-            exluir_compra()
         elif numero_menu == "0":
-            print("Obrigada pela prefrência. Volte sempre!")
+            print("—" * 60)
+            print("—" * 60)
+            print("╔══════════════════════════════════╗")
+            print("║  ⌨️ 𝓞𝓫𝓻𝓲𝓰𝓪𝓭𝓪 𝓹𝓮𝓵𝓪 𝓹𝓻𝓮𝓯𝓮𝓻𝓮𝓷𝓬𝓲𝓪   ║")
+            print(" Nossas páginas estarão sempre abertas para você.")
+            print("║                                  ║")
+            print("║  VOLTE QUANDO O SEU CORAÇÃO PEDIR POR NOVAS HISTÓRIAS!  ║")
+            print("║   ✍️ ONDE A SUA PRÓXIMA GRANDE AVENTURA ESTÁ A UMA PÁGINA DE DISTÂNCIA║")
+            print("║                                  ║")
+            print("╚══════════════════════════════════╝")
+           
+            print("────────────⌨️ LIVRARIA DAS CARTAS PERDIDAS")
+            print("—" * 60)
             break
         else:
             print("Essa opção não existe. Tente novamente, por favor.")
