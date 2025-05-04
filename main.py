@@ -282,6 +282,96 @@ def lista_compra():
         print(f"Total: R${total}")
         print("—"*60)
 
+def alterar_compra():
+    print("—"*60)
+    print("\nALTERAR COMPRA - LIVRARIA DAS CARTAS PERDIDAS")
+    print("—"*60)
+    
+    cpf = input("Digite o CPF do cliente para alterar a compra: ")
+    formato_cpf = f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
+  
+
+    achar_compra = None
+    for compra in compras: 
+        if compra[0] == formato_cpf:
+            achar_compra = compra
+            break
+    
+    if not achar_compra:
+        print("A compra não encontrada por esse CPF.")
+        return
+
+    print("\nA compra foi achada!")
+    print(f"Cliente: {achar_compra[0]}")
+    print(f"Livro: {achar_compra[1]}")
+    print(f"Quantidade: {achar_compra[2]}")
+    print(f"Preço: {achar_compra[3]}")
+    print(f"Total: {achar_compra[4]}")
+
+
+    alterar = input("\nO que você deseja alterar? 1- quantidade 2- preço): ").upper()
+
+    listar_compra = list(achar_compra)
+
+    if alterar == "1":
+        nova_qnt = input("Digite a nova quantidade: ")
+        nova_qnt = int(nova_qnt)
+        listar_compra[2] = nova_qnt
+        listar_compra[4] = listar_compra[3] * nova_qnt  #atualiza o total
+        print("A quantidade foi alterada com sucesso!")
+
+    elif alterar == "2":
+        novo_preco = input("Digite o novo preço: ")
+        novo_preco = float(novo_preco)
+        listar_compra[3] = novo_preco
+        listar_compra[4] = novo_preco * listar_compra[2]  #atualiza o total
+        print("O preço foi alterado com sucesso!")
+
+    else:
+        print("Opção inválida. Tente novamente.")
+
+    compras[compras.index(achar_compra)] = tuple(listar_compra)
+
+    print("—"*60)
+    print(f"Compra atualizada: {listar_compra}")
+
+def exluir_compra():
+    
+    print("—"*60)
+    print("\nEXCLUIR COMPRA - LIVRARIA DAS CARTAS PERDIDAS")
+    print("—"*60)
+    
+    cpf = input("Digite o CPF(Cadastro de Pessoa Física) do cliente para excluir a compra: ")
+    formato_cpf = f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
+  
+    achar_compra = None
+    for compra in compras: #usa a lista
+        if compra[0] == formato_cpf:
+            achar_compra = compra
+            break
+    
+    if not achar_compra:
+        print("A compra não foi encontrada por esse CPF.")
+        return
+
+    print("\nA compra foi achada!")
+    print(f"Cliente: {achar_compra[0]}")
+    print(f"Livro: {achar_compra[1]}")
+    print(f"Quantidade: {achar_compra[2]}")
+    print(f"Preço: {achar_compra[3]}")
+    print(f"Total: {achar_compra[4]}")
+
+    confirmar = input("\Para cancelar digite(1) e se não quiser cancelar digite(2): ").upper()
+
+    if confirmar == '1':
+        del compras[0]
+        print("A compra foi excluída com sucesso!")
+    else:
+        print("A exclusão foi cancelada.")
+
+    print("—"*60)
+
+
 #O menu vem depois das listas para não gerar um erro, já que as variáveis ainda vão ser declaradas
 
 def menu():
@@ -301,6 +391,8 @@ def menu():
 8. Excluir cliente cadastrado
 9. Registrar uma nova compra
 10. Lista de compras
+11. Alterar compras
+12. Excluir compras
 0. Sair
 
        ''' )
@@ -328,6 +420,10 @@ def menu():
             cadastrar_compra()
         elif numero_menu == "10":
             lista_compra()
+        elif numero_menu == "11":
+            alterar_compra()
+        elif numero_menu == "12":
+            exluir_compra()
         elif numero_menu == "0":
             print("—" * 60)
             print("—" * 60)
