@@ -1,0 +1,21 @@
+{
+    "livros": [
+        [
+            "111",
+            "A FÚRIA",
+            "ALEX TORRES",
+            "2020",
+            25.45,
+            12
+        ]
+    ],
+    "clientes": [
+        [
+            "112.533.154-26",
+            "LAIS SANTOS",
+            "LSS@HOTMAIL.COM",
+            "(81) 98853-5980"
+        ]
+    ],
+    "compras": []
+}

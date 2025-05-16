@@ -1,9 +1,32 @@
+import json
 livros = [] #entidade principal (título, id, autor, ano, preço, estoque)
 clientes = [] #entidade principal(nome, cpf, email, telefone)
 compras = [] #entidade negócio (liga livros e clientes)
-    #as listas ("[]") guardam TODOS os itens
+
+def carregar_dados():
+    try:
+        with open("dados_livraria.json", "r", encoding="utf-8") as arquivo:
+            dados = json.load(arquivo)
+            global livros, clientes, compras
+            livros = dados.get("livros", [])
+            clientes = dados.get("clientes", [])
+            compras = dados.get("compras", [])
+    except FileNotFoundError:
+        print("Arquivo não encontrado. Criando novo arquivo.")
 
 
+#as listas ("[]") guardam TODOS os itens
+
+def salvar_dados():
+    with open("dados_livraria.json", "w", encoding="utf-8") as arquivo:
+        json.dump({
+            "livros": livros,
+            "clientes": clientes,
+            "compras": compras
+        }, arquivo, indent=4, ensure_ascii=False)
+
+
+carregar_dados()
 
 def boas_vindas():
     print("—" * 60) #estilização de título
@@ -29,6 +52,7 @@ def cadastrar_livro():
 
     livros.append((IDF, titulo, autor, ano, preco, estoque))
     print(f"\nO cadastro do livro '{titulo}' foi realizado.")
+    salvar_dados()
 
 def lista_livro(): 
     if not livros:
@@ -65,13 +89,14 @@ def alterar_livro():
                 confirma = int(confirma)
                 if confirma == 1:
                     livros[livros.index(livro)] = (IDF, novo_titulo, novo_autor, novo_ano, novo_preco, novo_estoque)
-                    print(f"\nO livro foi alterado com sucesso!\nTítulo: {novo_titulo}, Autor: {novo_autor}, Ano: {novo_ano}, Preço: R${novo_preco}, Estoque: {novo_estoque}, ID: {ID}")
+                    print(f"\nO livro foi alterado com sucesso!\nTítulo: {novo_titulo}, Autor: {novo_autor}, Ano: {novo_ano}, Preço: R${novo_preco}, Estoque: {novo_estoque}, IDF: {IDF}")
+                    salvar_dados()
                 else:
                     print("A alteração foi cancelada.")
                 return  
 
         print(f"O livro com o 'id'(identificador) {livro_alterar} não foi encontrado. Tente novamente!")
-        
+        salvar_dados()
 
 def excluir_livro():
     excluir_id = input("Digite o 'id'(identificador) do livro que você deseja excluir: ")
@@ -82,7 +107,7 @@ def excluir_livro():
             print("O livro foi excluído. Se quiser adicioná-lo novamente precisa cadastrar(2)\n")
             return
         print("O 'id'(identificador) digitado não foi encontrado. Tente novamente")
-
+        salvar_dados()
 #A linha do for i in range está percorrendo toda a lista "livros"
 #A var "i" gera um índice que começa no 0 até a quantidade de livros -1, permitindo acessá-los individualmente 
 #livros[i][0] acessa o PRIMEIRO valor da tupla, que é o id, e se somente se, for igual ao digitado pelo usuário, o livro será excluído
@@ -116,15 +141,15 @@ def cadastrar_cliente():
     cliente = (formato_cpf, nome, email, formato_telefone)
     clientes.append(cliente)
     print(f"\nO(a) cliente {nome} foi cadastrado(a)!\n") 
-
+    salvar_dados()
 def lista_cliente():
     if not clientes:
         print("\nNenhum cliente foi cadastrado\n")
     else:
-         print("\nLista de clientes cadastrados:\n ")
-         for cliente in clientes:
-            print(f"Nome: {cliente[0]}")
-            print(f"CPF: {cliente[1]}")
+        print("\nLista de clientes cadastrados:\n ")
+    for cliente in clientes:
+            print(f"Nome: {cliente[1]}")
+            print(f"CPF: {cliente[0]}")
             print(f"Email: {cliente[2]}")
             print(f"Telefone: {cliente[3]}")
             print("—" * 40)
@@ -157,17 +182,18 @@ def alterar_cliente():
                 if confirma == "1":
                     clientes[clientes.index(CLIENTE)] = (formato_cpf, novo_nome, novo_email, formato_telefone)
                     print(f"\nO cliente foi alterado com sucesso!\nCPF: {formato_cpf}, Nome: {novo_nome}, Email: {novo_email}, Telefone: {formato_telefone}")
+                    salvar_dados()
                 else:
                     print("A alteração foi cancelada.")
                 return
         
         print(f"O cliente com CPF {cpf} não foi encontrado. Tente novamente.")
-
+        salvar_dados()
+        
 def excluir_cliente():
     excluir_cpf = input("Digite o CPF do cliente que você deseja excluir: ")
     
-    cpf_normal = excluir_cpf.replace(".", "").replace("-", "")
-     
+    cpf_normal = excluir_cpf.replace(".", "").replace("-", "") 
     if len(cpf_normal) == 11:
         
         formato_cpf = f"{cpf_normal[:3]}.{cpf_normal[3:6]}.{cpf_normal[6:9]}-{cpf_normal[9:]}"
@@ -180,17 +206,16 @@ def excluir_cliente():
                 del clientes[c]
                 print("O cadastro do cliente foi apagado. Se quiser adicioná-lo novamente, realize o cadastro (opção 2).\n")
                 return
-        
+            salvar_dados()
         print("O CPF (Cadastro de Pessoa Física) digitado não foi encontrado. Tente novamente.")
     else:
         print("CPF inválido. Ele deve conter 11 dígitos numéricos.")
-
+        salvar_dados()
 import datetime
 
 def cadastrar_compra():
 
     print("\nREGISTRAR COMPRA - LIVRARIA DAS CARTAS PERDIDAS\n")
- 
     print("ALERTA: O CPF deve conter 11 números")
     cpf = input("Digite o CPF (Cadastro de Pessoa Física) do cliente: ")
     if len(cpf) != 11:
@@ -235,7 +260,7 @@ def cadastrar_compra():
     #se não usar o * você cria uma tupla dentro de outra tupla
 
     compras.append((formato_cpf, IDF, qnt, preco, total, data))
-   
+
     print("—" * 50)
     print("\nNOTA FISCAL - LIVRARIA DAS CARTAS PERDIDAS")
     print("—" * 50)
@@ -249,7 +274,8 @@ def cadastrar_compra():
     print(f"Total: R${total}")
     print("—" * 50)
     print("Obrigada pela compra. Volte sempre!\nOnde sua próxima aventura está a uma página de distância!")
-
+    salvar_dados()
+    
 def lista_compra():
     print("—"*60)
     print("\nREGISTRO DE COMPRAS - LIVRARIA DAS CARTAS PERDIDAS")
@@ -281,7 +307,7 @@ def lista_compra():
         print(f"Preço: {preco}")
         print(f"Total: R${total}")
         print("—"*60)
-
+        
 def alterar_compra():
     print("—"*60)
     print("\nALTERAR COMPRA - LIVRARIA DAS CARTAS PERDIDAS")
@@ -289,7 +315,6 @@ def alterar_compra():
     
     cpf = input("Digite o CPF do cliente para alterar a compra: ")
     formato_cpf = f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
-  
 
     achar_compra = None
     for compra in compras: 
@@ -334,6 +359,7 @@ def alterar_compra():
 
     print("—"*60)
     print(f"Compra atualizada: {listar_compra}")
+    salvar_dados()
 
 def exluir_compra():
     
@@ -343,7 +369,6 @@ def exluir_compra():
     
     cpf = input("Digite o CPF(Cadastro de Pessoa Física) do cliente para excluir a compra: ")
     formato_cpf = f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
-  
     achar_compra = None
     for compra in compras: #usa a lista
         if compra[0] == formato_cpf:
@@ -366,11 +391,12 @@ def exluir_compra():
     if confirmar == '1':
         del compras[0]
         print("A compra foi excluída com sucesso!")
+        salvar_dados()
     else:
         print("A exclusão foi cancelada.")
 
     print("—"*60)
-
+    salvar_dados()
 
 #O menu vem depois das listas para não gerar um erro, já que as variáveis ainda vão ser declaradas
 
@@ -395,7 +421,7 @@ def menu():
 12. Excluir compras
 0. Sair
 
-       ''' )
+''' )
 
         numero_menu = input("O que você deseja? ")
 
@@ -407,7 +433,7 @@ def menu():
         elif numero_menu == "3":
             alterar_livro()
         elif numero_menu == "4":
-            exluir_livro()
+            excluir_livro()
         elif numero_menu == "5":
             cadastrar_cliente()
         elif numero_menu == "6":
@@ -435,14 +461,13 @@ def menu():
             print("║   ✍️ ONDE A SUA PRÓXIMA GRANDE AVENTURA ESTÁ A UMA PÁGINA DE DISTÂNCIA║")
             print("║                                  ║")
             print("╚══════════════════════════════════╝")
-           
             print("────────────⌨️ LIVRARIA DAS CARTAS PERDIDAS")
             print("—" * 60)
             break
         else:
             print("Essa opção não existe. Tente novamente, por favor.")
 
-       
+
 
 boas_vindas()
 menu()
